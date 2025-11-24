@@ -24,6 +24,19 @@ In it, I go through the official PyTorch quickstart example while explaining key
 
 It’s a great entry point to build a solid foundation before moving on to more complex models.
 
+## 2 - Going deeper with Pytorch
+
+Continue exploring how neural networks works with [**Going_deeper.ipynb**](./Going_deeper.ipynb) notebook.
+
+In it, I try to go further in what have been already explained in the quickstart:
+
+* How to choose the number of **epochs** to minimize the **loss**
+* Use the **tensorboard** tool for visualization
+* How to compare the **loss functions** and **optimizers**
+* The concepts of **layers** and **hidden layers** compared to the Pytorch representation
+* Changing the **number of hidden layers** and its impact
+* The impact of the **number of neurons** for an layer
+
 ---
 
 ## 🚀 Coming Soon
