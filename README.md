@@ -1,4 +1,4 @@
-# 🧠 Understand Neural Networks
+# Unnderstand Neural Networks
 
 This project aims to give clear and progressive explanations about how to use **PyTorch** to create different types of **Neural Networks**, from the simplest models to more advanced architectures.
 
@@ -12,7 +12,7 @@ Whether you’re new to PyTorch or just want to better understand what’s happe
 
 ---
 
-## 📘 1 - Following the Quickstart Section of PyTorch
+## 1 - Following the Quickstart Section of PyTorch
 
 Start with the [**Quickstart.ipynb**](./Quickstart.ipynb) notebook: it’s the first one you should follow.
 
@@ -39,16 +39,18 @@ In it, I try to go further in what have been already explained in the quickstart
 
 ---
 
-## 🚀 Coming Soon
+## Coming Soon
 
 More notebooks are on the way, covering:
 
-* **Convolutional Neural Networks (CNNs)**
-* **Recurrent Neural Networks (RNNs)**
-* **Natural Language Processing (NLP)**
+* **Convolutional Neural Networks**
+* **Recurrent Neural Networks**
+* **Natural Language Processing**
+* **The Transformers Architecture**
+* **Large Language Models**
 * and many other core deep learning concepts.
 
-A **French translation** of each notebook will also be available soon 🇫🇷
+A **French translation** of each notebook will also be available soon 
 
 Stay tuned!
 
