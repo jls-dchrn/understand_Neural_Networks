@@ -1,0 +1,11 @@
+myenv/
+env/
+venv/
+.ipynb_checkpoints/
+runs/
+img/*.drawio
+*/.ipynb_checkpoints/
+*/data/
+*/runs/
+*.pth
+*/*.pth
