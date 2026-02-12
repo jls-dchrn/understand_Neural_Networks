@@ -14,7 +14,7 @@ Whether you’re new to PyTorch or just want to better understand what’s happe
 
 ## 1 - Following the Quickstart Section of PyTorch
 
-Start with the [**Quickstart.ipynb**](./Quickstart.ipynb) notebook: it’s the first one you should follow.
+Start with the **Quickstart** ([en](./1_quickstart/en_quickstart.ipynb), [fr](./1_quickstart/fr_quickstart.ipynb)) notebook: it’s the first one you should follow.
 
 In it, I go through the official PyTorch quickstart example while explaining key concepts such as:
 
@@ -26,7 +26,7 @@ It’s a great entry point to build a solid foundation before moving on to more 
 
 ## 2 - Going deeper with Pytorch
 
-Continue exploring how neural networks works with [**Going_deeper.ipynb**](./Going_deeper.ipynb) notebook.
+Continue exploring how neural networks works with **Going_deeper**( [en](./2_going_deeper/en_going_deeper.ipynb), [fr](./2_going_deeper/fr_going_deeper.ipynb)) notebook.
 
 In it, I try to go further in what have been already explained in the quickstart:
 
@@ -50,7 +50,7 @@ More notebooks are on the way, covering:
 * **Large Language Models**
 * and many other core deep learning concepts.
 
-A **French translation** of each notebook will also be available soon 
+A **French translation** of each notebook is available.
 
 Stay tuned!
 
