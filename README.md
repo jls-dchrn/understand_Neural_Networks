@@ -10,12 +10,11 @@ Each Jupyter Notebook includes:
 
 Whether you’re new to PyTorch or just want to better understand what’s happening under the hood, this repository is here to guide you step by step.
 
----
+
 
 ## 1 - Following the Quickstart Section of PyTorch
 
 Start with the **Quickstart** ([en](./1_quickstart/en_quickstart.ipynb), [fr](./1_quickstart/fr_quickstart.ipynb)) notebook: it’s the first one you should follow.
-
 In it, I go through the official PyTorch quickstart example while explaining key concepts such as:
 
 * the most common **loss functions**
@@ -23,6 +22,8 @@ In it, I go through the official PyTorch quickstart example while explaining key
 * how **training** and **evaluation loops** really work under the hood.
 
 It’s a great entry point to build a solid foundation before moving on to more complex models.
+
+You can also acces the web version of the [english](https://jls-dchrn.github.io/understand_Neural_Networks/HTML_sources/en_quickstart.html) and [french](https://jls-dchrn.github.io/understand_Neural_Networks/HTML_sources/fr_quickstart.html) versions of quickstart.
 
 ## 2 - Going deeper with Pytorch
 
@@ -37,7 +38,9 @@ In it, I try to go further in what have been already explained in the quickstart
 * Changing the **number of hidden layers** and its impact
 * The impact of the **number of neurons** for an layer
 
----
+
+
+You can also acces the web version of the [english](https://jls-dchrn.github.io/understand_Neural_Networks/HTML_sources/en_going_deeper.html) and [french](https://jls-dchrn.github.io/understand_Neural_Networks/HTML_sources/fr_going_deeper) versions of quickstart.
 
 ## Coming Soon
 
