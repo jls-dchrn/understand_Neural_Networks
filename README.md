@@ -1,4 +1,4 @@
-# Unnderstand Neural Networks
+# Understand Neural Networks
 
 This project aims to give clear and progressive explanations about how to use **PyTorch** to create different types of **Neural Networks**, from the simplest models to more advanced architectures.
 
@@ -56,7 +56,7 @@ In the **RNN_classifier** ([fr](./3_NLP_from_scratch/fr_RNN_classifier.ipynb)) N
 * implementing a pipeline to look for the optimal number of epochs before overfitting
 * changing the optimizer and learning rates for better performances.
 
-You can also access the web version of the [french version](https://jls-dchrn.github.io/understand_Neural_Networks/HTML_sources/fr_RNN_classifier) of RNN_classifier.
+You can also access the web version of the [french version](https://jls-dchrn.github.io/understand_Neural_Networks/HTML_sources/fr_RNN_classifier.html) of RNN_classifier.
 
 
 
