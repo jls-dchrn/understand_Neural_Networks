@@ -5,7 +5,8 @@ venv/
 runs/
 img/*.drawio
 */.ipynb_checkpoints/
-*/data/
+*/data*/
+*/data*
 */runs/
 *.pth
 */*.pth

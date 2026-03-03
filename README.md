@@ -39,16 +39,34 @@ In it, I try to go further in what have been already explained in the quickstart
 * The impact of the **number of neurons** for an layer
 
 
-
 You can also acces the web version of the [english](https://jls-dchrn.github.io/understand_Neural_Networks/HTML_sources/en_going_deeper.html) and [french](https://jls-dchrn.github.io/understand_Neural_Networks/HTML_sources/fr_going_deeper) versions of quickstart.
+
+## 3 - NLP from Scratch
+
+This part will explore the Natural Language Precessing domain.
+It is devided into 3 notebooks: RNN_classifier, RNN_text_generator and Attention_mechanism .
+
+### 3.1 RNN classifier
+
+In the **RNN_classifier** ([fr](./3_NLP_from_scratch/fr_RNN_classifier.ipynb)) Notebook, I create a character-level classification RNN as explained in the [pytorch documentation](https://docs.pytorch.org/tutorials/intermediate/char_rnn_classification_tutorial.html) and go further by:
+
+* explaining step by step **how RNNs works**
+* explaining what are **LSTM** and **GRU** and how they works
+* testing the performances of the classifier with LSTM and GRU
+* implementing a pipeline to look for the optimal number of epochs before overfitting
+* changing the optimizer and learning rates for better performances.
+
+You can also access the web version of the [french version](https://jls-dchrn.github.io/understand_Neural_Networks/HTML_sources/fr_RNN_classifier) of RNN_classifier.
+
+
 
 ## Coming Soon
 
 More notebooks are on the way, covering:
 
+* **RNN_text_generator**
+* **Attention_mechanism**
 * **Convolutional Neural Networks**
-* **Recurrent Neural Networks**
-* **Natural Language Processing**
 * **The Transformers Architecture**
 * **Large Language Models**
 * and many other core deep learning concepts.
