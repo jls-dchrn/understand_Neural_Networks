@@ -7802,7 +7802,7 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="NLP-from-scratch-part-1:-Classifying-Names-with-a-Character-Level-RNN">NLP from scratch part 1: Classifying Names with a Character-Level RNN<a class="anchor-link" href="#NLP-from-scratch-part-1:-Classifying-Names-with-a-Character-Level-RNN">¶</a></h1><p>Dans ces Notebooks, je vais parcourir le tutoriel <em><a href="(https://docs.pytorch.org/tutorials/intermediate/nlp_from_scratch_index.html">NLP from scratch</a></em> de la documentation Pytorch en y ajoutant des informations qui me sont pertinentes.</p>
+<h1 id="NLP-from-scratch-part-1:-Classifying-Names-with-a-Character-Level-RNN">NLP from scratch part 1: Classifying Names with a Character-Level RNN<a class="anchor-link" href="#NLP-from-scratch-part-1:-Classifying-Names-with-a-Character-Level-RNN">¶</a></h1><p>Dans ces Notebooks, je vais parcourir le tutoriel <em><a href="https://docs.pytorch.org/tutorials/intermediate/nlp_from_scratch_index.html">NLP from scratch</a></em> de la documentation Pytorch en y ajoutant des informations qui me sont pertinentes.</p>
 <p>Le tutoriel <em>NLP from scratch</em> est divisé en 3 parties distinctes dans la documentation Pytorch. De par la taille que cela prendrait de tout faire sur un Notebook, j'ai également décidé de le diviser en plusieurs parties.
 Ce notebook suivera donc la partie <em><a href="https://docs.pytorch.org/tutorials/intermediate/char_rnn_classification_tutorial.html">Classifying Names with a Character-Level RNN</a></em></p>
 <hr/>
@@ -8404,7 +8404,7 @@ Après cela, on normalise le logit, dans notre exemple on utilise la fonction <c
 Cela fonctionne parce que l'on utilise un structure <strong>encodeur/décodeur</strong>, il y a en faite 2 RNNs en jeux!</p>
 <p>L'encodeur fait la partie que l'on connaît, il lit la séquence d'entrée $x=[x_1, x_2, x_3]$ et produit le dernier état caché $h_3$.</p>
 <p>Ce derniers est ensuit fournit en tant que valeur pour l'état caché $h_0$ du décodeur. $h_0^{décodeur} = h_3^{encodeur}$.</p>
-<p>Ensuite la formule est la suivante pour le décodeur: $h_i = f(W_{yh} * y_i + W_{hh}*h_{i-1} +b $.</p>
+<p>Ensuite la formule est la suivante pour le décodeur: $h_i = f(W_{yh} * y_i + W_{hh}*h_{i-1} +b )$.</p>
 <p>La valeur de $y_0$ correspond au token &lt;SOS&gt; ou "Start Of Sequence", il sert simplement à définir le début d'une séquence. C'est une des valeurs que l'on a paramétré lorsque l'on a défini le vocabulairen il a donc sa représentation vectorielle propre.</p>
 <p>Il ne faut pas oublier dans cette formule que c'est bien les $y_{i-1}$ qui sont pris en compte pour le calcul de $h_i$ c'est à dire le résultat obtenu à la passe précédente $h_{i-1}$ auquel on aurait appliqué la couche linéaire permettant d'obtenir un output.
 Il ne serait pas efficace d'implémenter un décodeur avec <code>RNN</code>car il faudrait fournir un tenseur comportant l'unique</p>
@@ -9403,8 +9403,9 @@ Fin de l'entraînement
 </div>
 On peut constater qu'après 15 époques, notre modèle se mets à overfit car la perte de validation se met à augmenter. 
 
-<p>Si la perte augmente alors que la précision continue à augmenter c'est parce que nous avons choisi lors du tutoriel d'utiliser l'entropie croisée négative logarithmique qui pénalise les gros écarts.
-Le modèle devient plus juste pour la majorité des cas mais pour les cas sur lesquels il a faut, il devient de plus en plus confiant dessus, ce qui impacte beaucoup la perte au point de la faire augmenter.</p>
+<p>Si la perte augmente alors que la précision continue à augmenter c'est parce que nous avons choisi lors du tutoriel d'utiliser l'entropie croisée négative logarithmique qui couplée à <code>LogSoftmax</code> pénalise les gros écarts.</p>
+<p>La précision est une métrique binaire, la prédiction ne peut être que correcte ou incorrecte. La perte quant-à elle est sensible à la calibration des probabilités, la façon de calculer l'impact de chaque probabilité est ce qui va définir le comportement de la perte.</p>
+<p>Le modèle devient plus juste pour la majorité des cas mais pour les cas sur lesquels il a faut, il devient de plus en plus confiant dessus, ce qui impacte beaucoup la perte au point de la faire augmenter.</p>
 <p>Il faut donc souligner que les avantages que nous avions vu plus haut à augmenter le nombre d'époques est à nuancer car le modèle se met à se tromper de façon importante sur certains cas.</p>
 <p>On peut cependant noter que notre modèle GRU est plus performant que le LSTM qui lui même est plus performant que le RNN.</p>
 <p>On pourrait essayer de modifier le <strong>taux d'apprentissage</strong> afin d'améliorer les paramètres en le mettant à une valeur plus basse telle que $0.01$ ou utiliser un autre optimiseur tel que <strong>Adam</strong> qui fonctionne aussi bien avec les RNNs.</p>
@@ -9677,7 +9678,7 @@ Fin de l'entraînement
 <div>Perte de validation pour Adam avec lr=0.01</div>
 </div>
 </div>
-<p>L'optimiseur <strong>Adam</strong> n'est pas du tout adapté pour notre cas, au bout de la $3^e$ époques les courbes de validations se mettent déjà à augmenter.</p>
+<p>L'optimiseur <strong>Adam</strong> pour un taux d'apprentissage de $0.01$ mène à un sur-apprentissage rapide, au bout de la $3^e$ époques les courbes de validations se mettent déjà à augmenter. Pour continuer plus loin l'optimisation, nous pourrions tenter d'utiliser cet optimiseur avec un taux d'apprentissage bien plus faible tel que <code>1e-3</code> ou <code>1e-4</code>.</p>
 </div>
 </div>
 </div>
