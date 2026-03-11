@@ -7802,59 +7802,72 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="NLP-from-scratch-part-1:-Classifying-Names-with-a-Character-Level-RNN">NLP from scratch part 1: Classifying Names with a Character-Level RNN<a class="anchor-link" href="#NLP-from-scratch-part-1:-Classifying-Names-with-a-Character-Level-RNN">¶</a></h1><p>Dans ces Notebooks, je vais parcourir le tutoriel <em><a href="https://docs.pytorch.org/tutorials/intermediate/nlp_from_scratch_index.html">NLP from scratch</a></em> de la documentation Pytorch en y ajoutant des informations qui me sont pertinentes.</p>
-<p>Le tutoriel <em>NLP from scratch</em> est divisé en 3 parties distinctes dans la documentation Pytorch. De par la taille que cela prendrait de tout faire sur un Notebook, j'ai également décidé de le diviser en plusieurs parties.
-Ce notebook suivera donc la partie <em><a href="https://docs.pytorch.org/tutorials/intermediate/char_rnn_classification_tutorial.html">Classifying Names with a Character-Level RNN</a></em></p>
-<hr/>
+<h1 style="text-align: center;">NLP from scratch part 1: Classifying Names with a Character-Level RNN</h1>
+<p>Dans ces Notebooks, je vais parcourir le tutoriel <em><a href="https://docs.pytorch.org/tutorials/intermediate/nlp_from_scratch_index.html">NLP from scratch</a></em> de la documentation Pytorch en y ajoutant des informations qui me sont pertinentes.</p>
+<p>Le tutoriel <em>NLP from scratch</em> est divisé en 3 parties distinctes dans la documentation Pytorch. De par la taille que cela prendrait de tout faire sur un Notebook, j'ai également décidé de le diviser en plusieurs parties.</p>
+<p>Ce notebook suivera donc la partie <em><a href="https://docs.pytorch.org/tutorials/intermediate/char_rnn_classification_tutorial.html">Classifying Names with a Character-Level RNN</a></em></p>
+<p>Il est recommandé par le tutoriel d'avoir une première préparation quant-à comment utiliser Pytorch, c'est pour cela que je vous recommande de suivre mes Notebooks dans l'ordre, en commençant par <a href="https://jls-dchrn.github.io/understand_Neural_Networks/HTML_sources/fr_quickstart.html">Quickstart</a> puis <a href="https://jls-dchrn.github.io/understand_Neural_Networks/HTML_sources/fr_going_deeper.html">Going Deeper</a> .</p>
+<p>Il est également indiqué plusieurs sources telles que <a href="https://karpathy.github.io/2015/05/21/rnn-effectiveness/">rnn-effectiveness</a> pour comprendre le fonctionnement des RNNs et avoir en tête certains exemples et <a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/">Understanding LSTM Networks</a> qui donne autant des informations sur les LSTMs que les RNNs. Les explications suivantes sont basées en grande partie sur cette documentation.</p>
 <h2 id="Sommaire">Sommaire<a class="anchor-link" href="#Sommaire">¶</a></h2><ul>
-<li>Concept d'un RNN<ul>
-<li>Autograd</li>
-<li>Qu'est ce qu'un RNN ?</li>
+<li>I. Un RNN comme classifier<ul>
+<li>A. Le concept d'un RNN<ul>
+<li>L'intérêt d'Autograd</li>
+<li>Définition technique</li>
+<li>Cas d'utilisation</li>
 </ul>
 </li>
-<li>Mise en place de l'environnement<ul>
+<li>B. Mise en place de l'environnement<ul>
 <li>Création du vocabulaire</li>
 <li>Conversion de noms en tenseurs</li>
 <li>Classes pour la base de données</li>
 </ul>
 </li>
-<li>RNN avec Pytorch<ul>
+<li>C. RNN avec Pytorch<ul>
 <li>Implémentation du RNN dans le tutoriel</li>
-<li>nn.RNN</li>
+<li>Explication sur nn.RNN</li>
 <li>Transformation des états cachés en logits</li>
 <li>Cas seq2seq</li>
 </ul>
 </li>
-<li>Phase d'entraînement<ul>
+<li>D. Phase d'entraînement<ul>
 <li>Fonction d'entraînement</li>
 <li>Affichage du résultat</li>
 </ul>
 </li>
-<li>Qu'est ce qu'un LSTM?<ul>
+</ul>
+</li>
+<li>II. Aller plus loin avec les réseaux GRU et LSTM<ul>
+<li>A. Les limites des RNNs<ul>
+<li>Problème de disparition de gradient</li>
+<li>Le contexte à long terme</li>
+</ul>
+</li>
+<li>B. Qu'est ce qu'un LSTM?<ul>
 <li>Les limites des RNNs</li>
 <li>Les réseaux LSTM</li>
 <li>L'idée clé derrière les LSTMs</li>
 <li>Décomposition étape par étape d'un LSTM</li>
-<li>Implémentation avec nn.LSTM</li>
+</ul>
+</li>
+<li>C. Implémentation avec nn.LSTM<ul>
 <li>La classe nn.LSTM</li>
 <li>Résultats avec LSTM</li>
 </ul>
 </li>
-<li>Les réseaux GRU<ul>
+<li>D. Les réseaux GRU<ul>
 <li>Qu'est ce qu'un réseau GRU?</li>
 <li>Implémentation avec un réseau GRU</li>
 <li>Résultats avec GRU</li>
 </ul>
 </li>
-<li>Comparaison des 3 méthodes<ul>
+<li>E. Comparaison des 3 méthodes<ul>
 <li>Création et lancement du pipeline</li>
 <li>Résultats et conclusion</li>
 </ul>
 </li>
 </ul>
-<hr/>
-<p>Il est recommandé par le tutoriel d'avoir une première préparation quant-à comment utiliser Pytorch, c'est pour cela que je vous recommande de suivre mes Notebooks dans l'ordre, en commençant par <a href="https://jls-dchrn.github.io/understand_Neural_Networks/HTML_sources/fr_quickstart.html">Quickstart</a> puis <a href="https://jls-dchrn.github.io/understand_Neural_Networks/HTML_sources/fr_going_deeper.html">Going Deeper</a> .</p>
-<p>Il est également indiqué plusieurs sources telles que <a href="https://karpathy.github.io/2015/05/21/rnn-effectiveness/">rnn-effectiveness</a> pour comprendre le fonctionnement des RNNs et avoir en tête certains exemples et <a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/">Understanding LSTM Networks</a> qui donne autant des informations sur les LSTMs que les RNNs. Les explications suivantes sont basées en grande partie sur cette documentation.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -7865,15 +7878,7 @@ Ce notebook suivera donc la partie <em><a href="https://docs.pytorch.org/tutoria
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Concept-d'un-RNN">Concept d'un RNN<a class="anchor-link" href="#Concept-d'un-RNN">¶</a></h2><p>Avant la création de <code>torch.autograd</code>, pour créer un RNN il fallait cloner les paramètres d'une couche/layer plusieurs fois afin d'obtenir la structure souhaitée. Avec <code>torch.autograd</code>, les layers contiennent des états cachés et des gradients qui sont entièrement gérés par le graphe.</p>
-<p>Ainsi, il est maintenant possible d'implémenter un RNN dans un structure de code simple, similaire à celle utilisée pour créer d'autres réseaux de neurones.</p>
-<h3 id="Autograd">Autograd<a class="anchor-link" href="#Autograd">¶</a></h3><p><code>torch.autograd</code> est un <strong>moteur de différenciation automatique</strong>, qui permet l'entraînement de réseaux de neurones.</p>
-<p>C'est lui qui va entre autre s'occuper de lancer les passes avant/arrière (<em>forward pass &amp; backpropagation</em>).</p>
-<p>Il conserve un registre des données (les tenseurs), des opérations exécutées et des nouveaux tenseurs obtenus en passant par ces dernières, le tout dans un <strong>graphe acyclique dirigé</strong> (<em>Directed Acyclic Graph</em>).</p>
-<p>Ce graphe consiste en des objets de classe <code>torch.autograd.Function</code> (cf <a href="https://docs.pytorch.org/docs/stable/autograd.html#torch.autograd.Function">doc</a> )</p>
-<p>Les feuilles de cet arbre/graphe sont les tenseurs d'entrée tandis que les racines sont les tenseurs de sortie.
-Il est ainsi possible de calculer automatiquement le gradient en retraçant le parcours des feuilles aux racines.</p>
-<p>Pour plus de détails à propos de <code>torch.autograd</code>, regardez la documentation présente <a href="https://docs.pytorch.org/tutorials/beginner/blitz/autograd_tutorial.html">ici</a>.</p>
+<h1 id="I.-Un-RNN-comme-classifier">I. Un RNN comme classifier<a class="anchor-link" href="#I.-Un-RNN-comme-classifier">¶</a></h1>
 </div>
 </div>
 </div>
@@ -7884,7 +7889,16 @@ Il est ainsi possible de calculer automatiquement le gradient en retraçant le p
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Qu'est-ce-qu'un-RNN-?">Qu'est ce qu'un RNN ?<a class="anchor-link" href="#Qu'est-ce-qu'un-RNN-?">¶</a></h3><p>RNN est le diminutif de <em>Recurrent Neural Networks</em>.
+<h2 id="A.-Le-concept-d'un-RNN">A. Le concept d'un RNN<a class="anchor-link" href="#A.-Le-concept-d'un-RNN">¶</a></h2><p>Avant la création de <code>torch.autograd</code>, pour créer un RNN il fallait cloner les paramètres d'une couche/layer plusieurs fois afin d'obtenir la structure souhaitée. Avec <code>torch.autograd</code>, les layers contiennent des états cachés et des gradients qui sont entièrement gérés par le graphe.</p>
+<p>Ainsi, il est maintenant possible d'implémenter un RNN dans un structure de code simple, similaire à celle utilisée pour créer d'autres réseaux de neurones.</p>
+<h3 id="L'int%C3%A9r%C3%AAt-d'Autograd">L'intérêt d'Autograd<a class="anchor-link" href="#L'int%C3%A9r%C3%AAt-d'Autograd">¶</a></h3><p><code>torch.autograd</code> est un <strong>moteur de différenciation automatique</strong>, qui permet l'entraînement de réseaux de neurones.</p>
+<p>C'est lui qui va entre autre s'occuper de lancer les passes avant/arrière (<em>forward pass &amp; backpropagation</em>).</p>
+<p>Il conserve un registre des données (les tenseurs), des opérations exécutées et des nouveaux tenseurs obtenus en passant par ces dernières, le tout dans un <strong>graphe acyclique dirigé</strong> (<em>Directed Acyclic Graph</em>).</p>
+<p>Ce graphe consiste en des objets de classe <code>torch.autograd.Function</code> (cf <a href="https://docs.pytorch.org/docs/stable/autograd.html#torch.autograd.Function">doc</a> )</p>
+<p>Les feuilles de cet arbre/graphe sont les tenseurs d'entrée tandis que les racines sont les tenseurs de sortie.
+Il est ainsi possible de calculer automatiquement le gradient en retraçant le parcours des feuilles aux racines.</p>
+<p>Pour plus de détails à propos de <code>torch.autograd</code>, regardez la documentation présente <a href="https://docs.pytorch.org/tutorials/beginner/blitz/autograd_tutorial.html">ici</a>.</p>
+<h3 id="D%C3%A9finition-technique">Définition technique<a class="anchor-link" href="#D%C3%A9finition-technique">¶</a></h3><p>RNN est le diminutif de <em>Recurrent Neural Networks</em>.
 Les modèles de réseaux de neurones que nous avons vu jusqu'à présent sont très <strong>basiques</strong>: ils n'acceptent qu'une taille fixe de vecteurs en entrée, produisent en sortie un vecteur également de taille fixe et calcul en utilisant toujours le même nombre d'étapes: il passe par un nombre fixe de layers.</p>
 <p>De plus ils ne retiennent pas les informations passées précédemment lors de leur exécution, ils ne peuvent pas prendre en compte un ensemble d'éléments et comprendre les liens entre ces derniers.</p>
 <p>Un RNN est un réseau de neurones ayant une <strong>boucle</strong> dans son architecture, lui permettant de faire persister les informations qui lui sont passés.</p>
@@ -7900,7 +7914,7 @@ On ajoute cela à l'opération $W_{xh}*x_i+b_{xh}$ effectuée par la couche lin�
 <p>Ici, j'ai nommé le poids et le biais de la couche linéaire de $x_i$ $W_{xh}$ et $b_{xh}$ pour les différentier de ceux de l'autre couche linéaire.
 J'ai également simplifié le calcul en ne marquant qu'un poids $b$ qui correspond à la somme des poids des deux couches linéaires: $b = b_{xh} + b_{hh}$.</p>
 <p>Enfin, il est important de noter que les $h_i$ ne sont pas des logits, ce ne sont pas les résultats obtenus en sortie du RNN. Pour obtenir le logit  $y_i$ à partir de $h_i$, il faut le faire passer par un dernier layer linéaire qui a comme taille de sortie la taille souhaitée pour les logits.</p>
-<p>De par sa structure, on comprends rapidement que ce type de réseau de neurones est parfaitement adaptée à des données sous forme de <strong>liste</strong>, des ou de <strong>séquences d'éléments</strong>. Les éléments étant représentés sous la forme de vecteurs/tenseurs, un RNN prendra en entrée une <strong>séquence de vecteurs</strong>.</p>
+<h3 id="Cas-d'utilisation">Cas d'utilisation<a class="anchor-link" href="#Cas-d'utilisation">¶</a></h3><p>De par sa structure, on comprends rapidement que ce type de réseau de neurones est parfaitement adaptée à des données sous forme de <strong>liste</strong>, des ou de <strong>séquences d'éléments</strong>. Les éléments étant représentés sous la forme de vecteurs/tenseurs, un RNN prendra en entrée une <strong>séquence de vecteurs</strong>.</p>
 <p><img alt="Possibilité de prendre en entrée et réenvoyer en sortie des listes de différentes tailles." src="https://karpathy.github.io/assets/rnn/diags.jpeg" width="700"/></p>
 <p>On peut voir sur ce schéma les différentes possibilités avec d'architectures possibles utilisant un RNN.</p>
 <ol>
@@ -7932,7 +7946,7 @@ J'ai également simplifié le calcul en ne marquant qu'un poids $b$ qui correspo
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Mise-en-place-de-l'environnement">Mise en place de l'environnement<a class="anchor-link" href="#Mise-en-place-de-l'environnement">¶</a></h2><p>Le tutoriel nous fournit différents codes mettre en place notre environnement, tel que l'import de Torch, le choix de faire tourner sur CPU ou GPU et le téléchargement des données <a href="https://download.pytorch.org/tutorial/data.zip">ici</a> et leur préparation. Dans cet exemple on créé nos propres tenseurs par une méthode simple.</p>
+<h2 id="B.-Mise-en-place-de-l'environnement">B. Mise en place de l'environnement<a class="anchor-link" href="#B.-Mise-en-place-de-l'environnement">¶</a></h2><p>Le tutoriel nous fournit différents codes mettre en place notre environnement, tel que l'import de Torch, le choix de faire tourner sur CPU ou GPU et le téléchargement des données <a href="https://download.pytorch.org/tutorial/data.zip">ici</a> et leur préparation. Dans cet exemple on créé nos propres tenseurs par une méthode simple.</p>
 </div>
 </div>
 </div>
@@ -8303,7 +8317,7 @@ Exemple = (tensor([1]), tensor([[[0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="RNN-avec-Pytorch">RNN avec Pytorch<a class="anchor-link" href="#RNN-avec-Pytorch">¶</a></h2><p>Ci-dessous se trouve la classe <code>CharRNN</code>représentant le RNN du tutoriel.
+<h2 id="C.-RNN-avec-Pytorch">C. RNN avec Pytorch<a class="anchor-link" href="#C.-RNN-avec-Pytorch">¶</a></h2><p>Ci-dessous se trouve la classe <code>CharRNN</code>représentant le RNN du tutoriel.
 Je trouve qu'ils font abstraction de nombreuses notions et explications donc je vais prendre le temps de voir plus en détails comment cela fonctionne exactement.</p>
 <h3 id="Impl%C3%A9mentation-du-RNN-dans-le-tutoriel">Implémentation du RNN dans le tutoriel<a class="anchor-link" href="#Impl%C3%A9mentation-du-RNN-dans-le-tutoriel">¶</a></h3>
 </div>
@@ -8346,7 +8360,7 @@ Je trouve qu'ils font abstraction de nombreuses notions et explications donc je 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="nn.RNN">nn.RNN<a class="anchor-link" href="#nn.RNN">¶</a></h3><p>Pour construire notre RNN, il nous faut utiliser l'implémentation de <code>nn.RNN</code>, il est toujours intéressant de voir comment ça fonctionne. La classe est définie par les paramètres suivants:</p>
+<h3 id="Explications-sur-nn.RNN">Explications sur <code>nn.RNN</code><a class="anchor-link" href="#Explications-sur-nn.RNN">¶</a></h3><p>Pour construire notre RNN, il nous faut utiliser l'implémentation de <code>nn.RNN</code>, il est toujours intéressant de voir comment ça fonctionne. La classe est définie par les paramètres suivants:</p>
 <pre><code>class torch.nn.RNN(input_size, hidden_size, num_layers=1, nonlinearity='tanh', bias=True, batch_first=False, dropout=0.0, bidirectional=False, device=None, dtype=None)
 </code></pre>
 <p>Les paramètres à renseigner obligatoirement sont la <strong>taille des éléments en entrée</strong> et le <strong>nombre de dimensions du vecteur d'état caché $h$</strong>.</p>
@@ -8375,39 +8389,6 @@ _, h_3 = self.rnn(x_3, h_2)
 <p>Dans le cas où les variables <code>x_i</code> sont des tenseurs de la forme <code>( seq_len = 1, batch = 1, input_size = 58)</code>, c'est à dire des tenseurs représentant chacun un unique vecteur.</p>
 <h3 id="Transformation-des-%C3%A9tats-cach%C3%A9s-en-logits">Transformation des états cachés en logits<a class="anchor-link" href="#Transformation-des-%C3%A9tats-cach%C3%A9s-en-logits">¶</a></h3><p>Pour obtenir le logit $y_i$ à partir de l'état caché $h_i$, il faut le faire passer par une couche linéaire de taille adaptée au logit voulu en sortie.
 Après cela, on normalise le logit, dans notre exemple on utilise la fonction <code>softmax</code></p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2b7b3a04-fb83-4130-8d21-8a06c991d0fc">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=e5b2be7d-06f9-4de1-af86-47490787ba2c">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Cas-seq2seq">Cas seq2seq<a class="anchor-link" href="#Cas-seq2seq">¶</a></h3><p>Dans le cas d'une structure <strong>seq2seq</strong> comme mentionné plus haut dans la partie <em>4. many to many</em> du schéma, on montrait que qu'une séquence de 3 éléments passaient par le RNN mais qu'il y avait 6 passes dans le RNN.</p>
-<p>Les 3 premières passes avec chacune une entrée mais pas de sortie et les 3 suivante sans entrée mais avec chacune une valeur d'entrée.
-Cela fonctionne parce que l'on utilise un structure <strong>encodeur/décodeur</strong>, il y a en faite 2 RNNs en jeux!</p>
-<p>L'encodeur fait la partie que l'on connaît, il lit la séquence d'entrée $x=[x_1, x_2, x_3]$ et produit le dernier état caché $h_3$.</p>
-<p>Ce derniers est ensuit fournit en tant que valeur pour l'état caché $h_0$ du décodeur. $h_0^{décodeur} = h_3^{encodeur}$.</p>
-<p>Ensuite la formule est la suivante pour le décodeur: $h_i = f(W_{yh} * y_i + W_{hh}*h_{i-1} +b )$.</p>
-<p>La valeur de $y_0$ correspond au token &lt;SOS&gt; ou "Start Of Sequence", il sert simplement à définir le début d'une séquence. C'est une des valeurs que l'on a paramétré lorsque l'on a défini le vocabulairen il a donc sa représentation vectorielle propre.</p>
-<p>Il ne faut pas oublier dans cette formule que c'est bien les $y_{i-1}$ qui sont pris en compte pour le calcul de $h_i$ c'est à dire le résultat obtenu à la passe précédente $h_{i-1}$ auquel on aurait appliqué la couche linéaire permettant d'obtenir un output.
-Il ne serait pas efficace d'implémenter un décodeur avec <code>RNN</code>car il faudrait fournir un tenseur comportant l'unique</p>
 </div>
 </div>
 </div>
@@ -8454,12 +8435,31 @@ Il ne serait pas efficace d'implémenter un décodeur avec <code>RNN</code>car i
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p>Il est également intéressant de noter qu'il est possible de changer d'autres paramètres de <code>nn.RNN</code>.</p>
 <h4 id="num_layers">num_layers<a class="anchor-link" href="#num_layers">¶</a></h4><p>Par exemple, le paramètre <code>num_layers</code>indique le nombre de RNN qu'on empile à la suite comme des couches. C'est à dire que pour <code>num_layers = 2</code>, on aura un premier RNN qui va s'appliquer à notre tenseur $x$ et retournera le tenseur $h^1$. La $2^{nde}$ couche RNN va prendre en entrée le tenseur $h^1$ pour finalement renvoyer un tenseur $h^2$ que l'on fera passer par la couche linéaire pour enfin obtenir nos logits.</p>
-<p>C'est bien le même RNN qui s'applique à ses états cachés en sortie et ce autant de fois que précisé par ce paramètre. Un très bonne explication est disponible à <a href="https://stackoverflow.com/a/63296287">ce lien</a>. Par défaut on garde <code>num_layers = 1 </code>.</p>
+<p>C'est bien la même structure RNN qui s'applique à ses états cachés en sortie et ce autant de fois que précisé par ce paramètre. Il faut cependant noter que chaque couche a ses propres paramètres qui seront donc différents de ceux des autres couches au fur et à mesure des entraînements. Un très bonne explication est disponible à <a href="https://stackoverflow.com/a/63296287">ce lien</a>. Par défaut on garde <code>num_layers = 1 </code>.</p>
 <h4 id="nonlinearity">nonlinearity<a class="anchor-link" href="#nonlinearity">¶</a></h4><p>On peut aussi modifier la fonction d'activation en modifiant le paramètre <code>nonlinearity='tanh'</code>. Par exemple<code>nonlinearity='relu'</code> permet d'utiliser la fonction ReLU.</p>
 <h4 id="bidirectional">bidirectional<a class="anchor-link" href="#bidirectional">¶</a></h4><p>Le paramètre <code>bidirectional=False</code>indique si l'on veut un fonctionnement bidirectionnel. Cela consiste à créer 2 RNNs indépendants, un premier qui traite l'entrée $[x_1, ...,x_{i-1}, x_i]$ et l'autre qui lis l'entrée dans l'autre sens, c'est à dire qui traite l'entrée $[x_i, x_{i-1}, ... x_1]$ . Sont ensuite concaténées les sorties des deux RNNs.</p>
-<p>Soit $t= hidden\_size$, on obtiens donc $[h^{forward}_1, ..., h^{backward}_{t},h^{forward}_{t}, ...., h^{backward}_1]$ et $h^{backward}_1$ comme valeurs respectives pour les variables <code>output</code>et <code>h_n</code>.</p>
+<p>Soit $t= hidden\_size$, on obtiens donc $[h^{forward}_1 \oplus h^{backward}_1, ..., h^{backward}_{t} \oplus h^{forward}_{t}]$ et $h^{backward}_1$ comme valeurs respectives pour les variables <code>output</code>et <code>h_n</code>.</p>
 <h4 id="bias">bias<a class="anchor-link" href="#bias">¶</a></h4><p>Par défaut <code>bias = True </code>, si on le désactive il n'y aura plus les biais des deux couches linéaires que l'avais regroupé sous l'appellation $b$ plus haut.</p>
 <h4 id="batch_first">batch_first<a class="anchor-link" href="#batch_first">¶</a></h4><p>C'est utilisé si on veut donner des tenseurs sous la forme <code>(batch, seq, feature)</code> plutôt que <code>(seq, batch, feature)</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=e5b2be7d-06f9-4de1-af86-47490787ba2c">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Cas-seq2seq">Cas seq2seq<a class="anchor-link" href="#Cas-seq2seq">¶</a></h3><p>Dans le cas d'une structure <strong>seq2seq</strong> comme mentionné plus haut dans la partie <em>4. many to many</em> du schéma, on montrait que qu'une séquence de 3 éléments passaient par le RNN mais qu'il y avait 6 passes dans le RNN.</p>
+<p>Les 3 premières passes avec chacune une entrée mais pas de sortie et les 3 suivante sans entrée mais avec chacune une valeur d'entrée.
+Cela fonctionne parce que l'on utilise un structure <strong>encodeur/décodeur</strong>, il y a en faite 2 RNNs en jeux!</p>
+<p>L'encodeur fait la partie que l'on connaît, il lit la séquence d'entrée $x=[x_1, x_2, x_3]$ et produit le dernier état caché $h_3$.</p>
+<p>Ce derniers est ensuit fournit en tant que valeur pour l'état caché $h_0$ du décodeur. $h_0^{décodeur} = h_3^{encodeur}$.</p>
+<p>Ensuite la formule est la suivante pour le décodeur: $h_i = f(W_{yh} * y_i + W_{hh}*h_{i-1} +b )$.</p>
+<p>La valeur de $y_0$ correspond au token &lt;SOS&gt; ou "Start Of Sequence", il sert simplement à définir le début d'une séquence. C'est une des valeurs que l'on a paramétré lorsque l'on a défini le vocabulairen il a donc sa représentation vectorielle propre.</p>
+<p>Il ne faut pas oublier dans cette formule que c'est bien les $y_{i-1}$ qui sont pris en compte pour le calcul de $h_i$ c'est à dire le résultat obtenu à la passe précédente $h_{i-1}$ auquel on aurait appliqué la couche linéaire permettant d'obtenir un output.
+Il ne serait pas efficace d'implémenter un décodeur avec <code>RNN</code>car il faudrait fournir un tenseur comportant l'unique</p>
 </div>
 </div>
 </div>
@@ -8519,7 +8519,7 @@ Il ne serait pas efficace d'implémenter un décodeur avec <code>RNN</code>car i
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Phase-d'entra%C3%AEnement">Phase d'entraînement<a class="anchor-link" href="#Phase-d'entra%C3%AEnement">¶</a></h2><p>La phase d'entraînement pour les RNN est similaire à celle que l'on a vu pour les autres réseaux de neurones dans les notebooks précédents.</p>
+<h2 id="D.-Phase-d'entra%C3%AEnement">D. Phase d'entraînement<a class="anchor-link" href="#D.-Phase-d'entra%C3%AEnement">¶</a></h2><p>La phase d'entraînement pour les RNN est similaire à celle que l'on a vu pour les autres réseaux de neurones dans les notebooks précédents.</p>
 <h3 id="Fonction-d'entra%C3%AEnement">Fonction d'entraînement<a class="anchor-link" href="#Fonction-d'entra%C3%AEnement">¶</a></h3>
 </div>
 </div>
@@ -8778,7 +8778,46 @@ L'entraînement a pris 297.6005539894104s
 <img alt="Résultat pour 50 époques" src="../img/NLP_from_scratch/part_1/confusion_matrix_RNN.png" width="400"/>
 </img></div>
 <p>On peut constater dans un premier temps que ma matrice du confusion (à droite) a ordonné les langues dans un ordre différent que le tutoriel. On pouvait déjà le deviner au début de ce notebook lors de l'affichage de <code>alldata[0] </code>, nous avions un nom irlandais tandis que le tutoriel affichait un nom arabe. Il aurait été possible de changer le code du tutoriel pour ordonner la base de donnée.</p>
-<p>On peut cependant voir que l'extérieur de la diagonale est un peu moins clair, légère amélioration obtenue en presque doublant le nombre d'époques. Il nous est proposé de tester de changer différents paramètres tels que le nombre d'époques, la batch size, le taux d'apprentissage ou de remplacer <code>nn.RNN </code>par <code>nn.LSTM </code> ou <code>nn.GRU </code></p>
+<p>On peut cependant voir que l'extérieur de la diagonale est un peu moins clair, légère amélioration obtenue en presque doublant le nombre d'époques. Il nous est proposé de tester de changer différents paramètres tels que le nombre d'époques, la batch size, le taux d'apprentissage ou de remplacer <code>nn.RNN </code>par <code>nn.LSTM </code> ou <code>nn.GRU </code>.</p>
+<p><strong>Cela conclut le code du tutoriel, nous allons maintenant pouvoir nous intéresser aux réseaux LSTM et GRU, observer leurs performances dans ce même pipeline puis, utiliser ce que nous avons vu dans les précédents Notebooks pour éviter le sur-apprentissage.</strong></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=07d188fa-29dc-47cc-bba3-f9425515577b">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h1 id="II.-Aller-plus-loin-avec-les-r%C3%A9seaux-GRU-et-LSTM">II. Aller plus loin avec les réseaux GRU et LSTM<a class="anchor-link" href="#II.-Aller-plus-loin-avec-les-r%C3%A9seaux-GRU-et-LSTM">¶</a></h1>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=19f64123-4bde-412c-a45c-12fb85a4fdf8">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="A.-Les-limites-des-RNNs">A. Les limites des RNNs<a class="anchor-link" href="#A.-Les-limites-des-RNNs">¶</a></h2><h3 id="Le-contexte-%C3%A0-long-terme">Le contexte à long terme<a class="anchor-link" href="#Le-contexte-%C3%A0-long-terme">¶</a></h3><p>D'après la source <a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/">Understand LSTM Networks</a> abordée au début du notebook, le problème des RNNs est qu'ils ne performent pas bien pour des dépendances à long terme.
+Les RNNs sont très efficace lorsque les séquence ont une continuité et que l'on essaye de prédire la suite. Au contraire, si l'information importante pour prédire la suite est bien plus tôt dans la séquence et qu'entre il y a des informations bien moins pertinentes, le RNN aura du mal à faire la bonne prédiction.</p>
+<p>L'exemple donné est le suivant:</p>
+<ul>
+<li>pour la phrase "Les nuages sont dans le", il est évident que la suite sera "ciel", le RNN arrivera à trouver la bonne prédiction.</li>
+<li>pour la phrase "J'ai grandi en France, [...] . Je parle couramment", le contexte important est le début de la phrase tandis que ce qui suit, représenté par "[...]" ne permettrait pas de prédire la bonne réponse qui est "français". Dans ce type d'exemple, le RNN ne sera pas performant.</li>
+</ul>
+<p>Plus l'écart entre l'information pertinente et la partie qui doit être prédite est grand, moins bonnes seront les performances du RNN.</p>
+<p>La principale raison de cette perte est la disparition du gradient.</p>
+<h3 id="Probl%C3%A8me-de-disparition-de-gradient">Problème de disparition de gradient<a class="anchor-link" href="#Probl%C3%A8me-de-disparition-de-gradient">¶</a></h3><p>Lors de la rétropropagation (<em>backpropagation</em>) dans un RNN, le gradient est propagé à travers le temps, on appèle cela <em>Backpropagation Through Time</em> ou <em>BPTT</em>.</p>
+<p>À chaque pas de temps, le gradient est multiplié par la dérivée de la fonction d'activation et par la matrice de poids $W_{hh}$ Pour une séquence de longueur $N$, on obtient un produit de $N$ termes:</p>
+<p>$$
+\frac{\partial \mathcal{L}}{\partial h_0} = \prod_{n=1}^{N} \frac{\partial h_n}{\partial h_{n-1}}
+$$</p>
+<p>Si chacun de ces termes est inférieur à 1, ce qui est souvent le cas avec la fonction <code>tanh</code>, ce produit tend <strong>exponentiellement vers 0</strong> quand $N$ est grand : c'est la <strong>disparition de gradient</strong> ou <em>vanishing gradient</em>. Le réseau n'arrive alors plus à apprendre des dépendances entre des éléments éloignés dans la séquence.</p>
+<p>À l'inverse, si les termes sont supérieurs à 1, le gradient peut <strong>exploser</strong> (<em>exploding gradient</em>), d'où l'usage de <code>clip_grad_norm_</code> dans notre code d'entraînement.</p>
+<p>C'est précisément ce problème que les <strong>LSTM</strong> et les <strong>GRU</strong> résolvent grâce à leurs mécanismes de portes, comme nous le verrons par la suite.</p>
 </div>
 </div>
 </div>
@@ -8789,16 +8828,7 @@ L'entraînement a pris 297.6005539894104s
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Qu'est-ce-qu'un-LSTM?">Qu'est ce qu'un LSTM?<a class="anchor-link" href="#Qu'est-ce-qu'un-LSTM?">¶</a></h2><p>Avant de remplacer <code>nn.RNN </code> par <code>nn.LSTM </code>, il est important de comprendre en quoi correspond un <strong>LSTM</strong>.</p>
-<h3 id="Les-limites-des-RNNs">Les limites des RNNs<a class="anchor-link" href="#Les-limites-des-RNNs">¶</a></h3><p>D'après la source <a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/">Understand LSTM Networks</a> abordée au début du notebook, le problème des RNNs est qu'ils ne performent pas bien pour des dépendances à long terme.
-Les RNNs sont très efficace lorsque les séquence ont une continuité et que l'on essaye de prédire la suite. Au contraire, si l'information importante pour prédire la suite est bien plus tôt dans la séquence et qu'entre il y a des informations bien moins pertinentes, le RNN aura du mal à faire la bonne prédiction.</p>
-<p>L'exemple donné est le suivant:</p>
-<ul>
-<li>pour la phrase "Les nuages sont dans le", il est évident que la suite sera "ciel", le RNN arrivera à trouver la bonne prédiction.</li>
-<li>pour la phrase "J'ai grandi en France, [...] . Je parle couramment", le contexte important est le début de la phrase tandis que ce qui suit, représenté par "[...]" ne permettrait pas de prédire la bonne réponse qui est "français". Dans ce type d'exemple, le RNN ne sera pas performant.</li>
-</ul>
-<p>Plus l'écart entre l'information pertinente et la partie qui doit être prédite est grand, moins bonnes seront les performances du RNN.</p>
-<h3 id="Les-r%C3%A9seaux-LSTM">Les réseaux LSTM<a class="anchor-link" href="#Les-r%C3%A9seaux-LSTM">¶</a></h3><p>LSTM correspond à <em>Long Short Term Memory Networks</em> ou ** réseaux de mémoire à court et long terme**, c'est un type particulier de RNN.</p>
+<h2 id="B.-Qu'est-ce-qu'un-LSTM?">B. Qu'est ce qu'un LSTM?<a class="anchor-link" href="#B.-Qu'est-ce-qu'un-LSTM?">¶</a></h2><h3 id="Les-r%C3%A9seaux-LSTM">Les réseaux LSTM<a class="anchor-link" href="#Les-r%C3%A9seaux-LSTM">¶</a></h3><p>LSTM correspond à <em>Long Short Term Memory Networks</em> ou ** réseaux de mémoire à court et long terme**, c'est un type particulier de RNN.</p>
 <p>Ils ont été spécialement développés pour combler ce problème de dépendances à long terme. Ils sont aussi bien capable de prendre en compte les dépendances à court terme que celles à long terme.</p>
 <div style="display:flex; gap:50px; align-items:center;">
 <img alt="schéma de la structure d'un RNN" src="https://colah.github.io/posts/2015-08-Understanding-LSTMs/img/LSTM3-SimpleRNN.png" width="400"/>
@@ -8806,7 +8836,7 @@ Les RNNs sont très efficace lorsque les séquence ont une continuité et que l'
 </div>
 <center><img alt="légende des schémas" src="https://colah.github.io/posts/2015-08-Understanding-LSTMs/img/LSTM2-notation.png" width="400"/></center>
 <p>Comme représenté sur le schémas ci-dessus, les LSTMs (<em>schéma de droite</em>) ont une structure en chaîne similaire à celle des RNNs (<em>schéma de gauche</em>) mais la cellule / le module se répétant (représenté par $A$ sur le schéma) a une structure différente.</p>
-<h4 id="L'id%C3%A9e-cl%C3%A9-derri%C3%A8re-les-LSTMs">L'idée clé derrière les LSTMs<a class="anchor-link" href="#L'id%C3%A9e-cl%C3%A9-derri%C3%A8re-les-LSTMs">¶</a></h4><div style="display:flex; gap:50px; align-items:center;">
+<h3 id="L'id%C3%A9e-cl%C3%A9-derri%C3%A8re-les-LSTMs">L'idée clé derrière les LSTMs<a class="anchor-link" href="#L'id%C3%A9e-cl%C3%A9-derri%C3%A8re-les-LSTMs">¶</a></h3><div style="display:flex; gap:50px; align-items:center;">
 <img alt="schéma de la ligne horizontale en haut" src="https://colah.github.io/posts/2015-08-Understanding-LSTMs/img/LSTM3-C-line.png" width="600"/>
 <img alt="schéma d'une porte" src="https://colah.github.io/posts/2015-08-Understanding-LSTMs/img/LSTM3-gate.png" width="100"/>
 </div>
@@ -8835,7 +8865,7 @@ La fonction sigmoïde renvoie une valeur entre 0 et 1 qui décrit quelle proport
 <p>Cela génère un vecteur de coefficients $o_t$ qui seront appliqués à $C_t$ afin de déterminer l'importance que nous souhaitons donner à chaque éléments de l'état de la cellule pour obtenir $h_t$. Comme c'est $h_t$ qui passera pour la dernière couche linéaire pour donner le logit $y_t$, le choix des coefficients $o_t$ permet de déterminer quels éléments de l'état de la cellule nous voulons communiquer à nos logits.</p>
 <p>Enfin, pour le calcul de $h_t$, on applique d'abord la fonction d'activation $\tanh$ à $C_t$. Cela permet de compresser les valeurs de h_t à l'intervalle $[-1,1]$.</p>
 <h4 id="Variants-du-LSTM">Variants du LSTM<a class="anchor-link" href="#Variants-du-LSTM">¶</a></h4><p>Il existe différents variants du LSTM listé à la fin du document <a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/">Understand LSTM Networks</a> mais nous n'allons pas nous attarder plus sur le sujet.</p>
-<h3 id="Impl%C3%A9mentation-avec-nn.LSTM">Implémentation avec nn.LSTM<a class="anchor-link" href="#Impl%C3%A9mentation-avec-nn.LSTM">¶</a></h3>
+<h2 id="B.-Impl%C3%A9mentation-avec-nn.LSTM">B. Implémentation avec nn.LSTM<a class="anchor-link" href="#B.-Impl%C3%A9mentation-avec-nn.LSTM">¶</a></h2>
 </div>
 </div>
 </div>
@@ -8957,7 +8987,7 @@ Utiliser une telle projection peut permettre d'utiliser un vecteur d'état cach�
 Le tenseur <code>input</code> est le même pour les deux classes et le paramètre optionnel <code>hx</code> correspond au <code>h_0 </code> qui est la valeur $h_0$ utilisée.
 Pour LSTM, on peut également proposer une valeur pour l'état de la cellule initial $C_0$ qui correspond au paramètre optionnel <code>c_0 </code></li>
 </ul>
-<p>Là où pour <code>nn.RNN </code>, la sortie a la forme <code>output, h_n</code>, pour nn.LSTM on ajoute l'état de la cellule $n$, ce qui donne une sortie de la forme <code>input, (h_0, c_0)</code>.</p>
+<p>Là où pour <code>nn.RNN </code>, la sortie a la forme <code>output, h_n</code>, pour nn.LSTM on ajoute l'état de la cellule $n$, ce qui donne une sortie de la forme <code>output, (h_n, c_n)</code>.</p>
 <h3 id="R%C3%A9sultats-avec-LSTM">Résultats avec LSTM<a class="anchor-link" href="#R%C3%A9sultats-avec-LSTM">¶</a></h3><p>On voit lors de l'entraînement que la parte diminue bien plus avec LSTM, atteignant 12% au bout de 50 époques là où nous avions une perte de 32% avec RNN.</p>
 <p>On peut également constater sur la matrice de confusion que la diagonale est bien plus claire et son extérieur moins disparate que le résultat obtenu pour notre RNN, prouvant que l'on obtient de meilleurs performances avec le LSTM.</p>
 <p>On peut cependant remarquer que l'écossait a été bien plus confondu pour de l'anglais que dans notre utilisation du RNN, il faudrait peut être modifier d'autres paramètres pour corriger cela.</p>
@@ -8975,7 +9005,7 @@ Pour LSTM, on peut également proposer une valeur pour l'état de la cellule ini
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Les-r%C3%A9seaux-GRU">Les réseaux GRU<a class="anchor-link" href="#Les-r%C3%A9seaux-GRU">¶</a></h2><p>Pour cette explication sur les réseaux de neurones GRU, je me base sur <a href="https://medium.com/@anishnama20/understanding-gated-recurrent-unit-gru-in-deep-learning-2e54923f3e2">cet article</a> et <a href="https://www.geeksforgeeks.org/deep-learning/rnn-vs-lstm-vs-gru-vs-transformers/">celui là</a></p>
+<h2 id="C.-Les-r%C3%A9seaux-GRU">C. Les réseaux GRU<a class="anchor-link" href="#C.-Les-r%C3%A9seaux-GRU">¶</a></h2><p>Pour cette explication sur les réseaux de neurones GRU, je me base sur <a href="https://medium.com/@anishnama20/understanding-gated-recurrent-unit-gru-in-deep-learning-2e54923f3e2">cet article</a> et <a href="https://www.geeksforgeeks.org/deep-learning/rnn-vs-lstm-vs-gru-vs-transformers/">celui là</a></p>
 <h3 id="Qu'est-ce-qu'un-r%C3%A9seau-GRU?">Qu'est ce qu'un réseau GRU?<a class="anchor-link" href="#Qu'est-ce-qu'un-r%C3%A9seau-GRU?">¶</a></h3><p>GRU signifie <strong>Gated Recurrent Unit</strong> ou <strong>unité récurrente fermée</strong> (traduction de <a href="https://fr.wikipedia.org/wiki/Unit%C3%A9_r%C3%A9currente_ferm%C3%A9e">wikipédia</a> ).</p>
 <p>Ça a une architecture similaire à celle des LSTM que nous avons vu précédemment.
 Le but est d'également pouvoir sélectionner si des informations doivent être mémorisée ou oubliées au cours de la génération. Cependant, l'architecture GRU est plus simple, avec moins de paramètres que celle des LSTM, la rendant plus facile à entraîner et plus efficace.</p>
@@ -9112,7 +9142,17 @@ L'entraînement a pris 760.749195098877s
 <img alt="Résultat pour un GRU" src="../img/NLP_from_scratch/part_1/confusion_matrix_GRU.png" width="400"/>
 <div>Résultat pour nn.GRU</div>
 </div>
-<h2 id="Comparaison-des-3-m%C3%A9thodes">Comparaison des 3 méthodes<a class="anchor-link" href="#Comparaison-des-3-m%C3%A9thodes">¶</a></h2><p>Maintenant on aimerais bien mettre en place, de la même façon que dans le précédent Notebook <a href="https://jls-dchrn.github.io/understand_Neural_Networks/HTML_sources/fr_going_deeper.html">Going Deeper</a>, un pipeline qui va, en plus d'entraîner notre modèle, tester ce dernier sur le set de validation à chaque époque.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=241a6717-3ea4-4d49-bb3a-d16478467ec5">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="D.-Comparaison-des-3-m%C3%A9thodes">D. Comparaison des 3 méthodes<a class="anchor-link" href="#D.-Comparaison-des-3-m%C3%A9thodes">¶</a></h2><p>Maintenant on aimerais bien mettre en place, de la même façon que dans le précédent Notebook <a href="https://jls-dchrn.github.io/understand_Neural_Networks/HTML_sources/fr_going_deeper.html">Going Deeper</a>, un pipeline qui va, en plus d'entraîner notre modèle, tester ce dernier sur le set de validation à chaque époque.</p>
 <p>Cela nous permettra de mieux pouvoir constater si le modèle overfit au bout d'un certain nombre d'époques et ainsi pouvoir mieux sélectionner cet hyper-paramètre. Cela permet ainsi aussi de mieux comparer les performances du RNN par rapport au LSTM et au GRU sans overfitting.</p>
 <h3 id="Cr%C3%A9ation-et-lancement-du-pipeline">Création et lancement du pipeline<a class="anchor-link" href="#Cr%C3%A9ation-et-lancement-du-pipeline">¶</a></h3>
 </div>
