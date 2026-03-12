@@ -7896,7 +7896,7 @@ Leur github officiel: <a href="https://github.com/zalandoresearch/fashion-mnist"
 <li><strong>60,000 images d'entrainement</strong></li>
 <li><strong>10,000 images de test</strong></li>
 </ul>
-<p>Chaque image est un <strong>niveau de gris de 28x28 pixels</strong> qui appartient à une des <strong>1O classes</strong> possibles (T-shirt, pantalon, pull, ...)</p>
+<p>Chaque image est un <strong>niveau de gris de 28x28 pixels</strong> qui appartient à une des <strong>10 classes</strong> possibles (T-shirt, pantalon, pull, ...)</p>
 <p>On peut observer dans le code au desus qu'il y a un paramêtre booléen <code>train</code> dans le module <code>torchvision.datasets.FashionMNIST</code> qui indique si on veut les images d'entrainement ou celles de test.</p>
 <p>Paramètres importants:</p>
 <ul>
@@ -7906,12 +7906,12 @@ Leur github officiel: <a href="https://github.com/zalandoresearch/fashion-mnist"
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=a9704ba3-f596-4ca0-afc1-57e6a7960d08">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=a9704ba3-f596-4ca0-afc1-57e6a7960d08">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">64</span>
@@ -7925,20 +7925,6 @@ Leur github officiel: <a href="https://github.com/zalandoresearch/fashion-mnist"
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Shape of y: </span><span class="si">{</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">break</span>
 </pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Shape of X [N, C, H, W]: torch.Size([64, 1, 28, 28])
-Shape of y: torch.Size([64]) torch.int64
-</pre>
 </div>
 </div>
 </div>
@@ -8134,7 +8120,7 @@ Le carré donne beaucoup de poids aux valeurs abérrantes trop élevées, utilis
 Ces scores sont ensuite convertis en probabilités dont la somme fait 1 avec la fonction <strong>Softmax</strong>. (ex: 0.3 pour le label "chien" donne une probabilité de 30% que l'entrée corresponde à la classe "chien").</p>
 <p>La "loss" compare les probabilités prédites à celles de la "bonne réponse". La distribution de cette "bonne réponse" est une <strong>distribution parfaite</strong>, la probabilité de la bonne classe est 1 est celle des autres est de 0.</p>
 <p>$$
-\mathrm{CrossEntropy}(y, \hat{y}) = -\frac{1}{N} \sum_{i=1}^{N} \log\left( \frac{e^{\hat{y}_{i, y_i}}}{\sum_{j} e^{\hat{y}_{i,j}}} \right)
+\mathrm{CrossEntropy}(y, \hat{y}) = -\frac{1}{N} \sum_{i=1}^{N} \log_2\left( \frac{e^{\hat{y}_{i, y_i}}}{\sum_{j} e^{\hat{y}_{i,j}}} \right)
 $$</p>
 <h4 id="Explications:">Explications:<a class="anchor-link" href="#Explications:">¶</a></h4><ol>
 <li>Applique la fonction <strong>Softmax</strong> pour convertir les <em>logits</em> en probabilités:</li>
@@ -8146,13 +8132,13 @@ $$</p>
 <li>Calcul ensuite la moyenne de log de vraissemblance négative ou <strong>average negative log-likelihood</strong> de la classe juste, celle que l'on cherche à obtenir:</li>
 </ol>
 <p>$$
-\mathrm{CrossEntropy}(y, \hat{y}) = -\frac{1}{N} \sum_{i=1}^{N} \log\left(p_{i, y_i}\right)
+\mathrm{CrossEntropy}(y, \hat{y}) = -\frac{1}{N} \sum_{i=1}^{N} \log_2\left(p_{i, y_i}\right)
 $$</p>
 <p>Ça encourage le modèle à donner une valeur de probabilité plus élevée à la bonne classe.</p>
 <p><img alt="cross_entropy" src="https://ml-cheatsheet.readthedocs.io/en/latest/_images/cross_entropy.png"/></p>
 <h3 id="4---L'entropie-crois%C3%A9e-binaire-ou-Binary-Cross-Entropy-(BCE)">4 - L'entropie croisée binaire ou Binary Cross-Entropy (BCE)<a class="anchor-link" href="#4---L'entropie-crois%C3%A9e-binaire-ou-Binary-Cross-Entropy-(BCE)">¶</a></h3><p>Utilisée pour des <strong>classifications binaires</strong> (ex: pouvoir dire si un mail est un spam ou ne l'est pas).</p>
 <p>$$
-\mathrm{BCE}(y, \hat{y}) = -\frac{1}{N} \sum_{i=1}^{N} \left[ y_i \log(\hat{y}_i) + (1 - y_i)\log(1 - \hat{y}_i) \right]
+\mathrm{BCE}(y, \hat{y}) = -\frac{1}{N} \sum_{i=1}^{N} \left[ y_i \log_2(\hat{y}_i) + (1 - y_i)\log_2(1 - \hat{y}_i) \right]
 $$</p>
 <p>Ici:</p>
 <ul>
@@ -8167,16 +8153,16 @@ $$</p>
 <p><img alt="binary_Xentropy" src="https://www.pinecone.io/_next/image/?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fvr8gru94%2Fproduction%2F54c97fda8af4dccc23d58bd14cd95802df6f1e49-393x272.png&amp;w=640&amp;q=75"/></p>
 <h3 id="5---La-vraisemblance-n%C3%A9gative-logarthmique-ou-Negative-Log-Likelihood-Loss-(NLLLoss)">5 - La vraisemblance négative logarthmique ou Negative Log Likelihood Loss (NLLLoss)<a class="anchor-link" href="#5---La-vraisemblance-n%C3%A9gative-logarthmique-ou-Negative-Log-Likelihood-Loss-(NLLLoss)">¶</a></h3><p>Utilisée pour des tâches de <strong>classification multi-classes</strong> lorsque le modèle renvoie directement une <strong>probabilité logarithmique</strong> plutôt que des logits non-normalisés.</p>
 <p>$$
-\mathrm{NLL}(y, \hat{y}) = -\frac{1}{N} \sum_{i=1}^{N} \log p_{i, y_i}
+\mathrm{NLL}(y, \hat{y}) = -\frac{1}{N} \sum_{i=1}^{N} \log_2 p_{i, y_i}
 $$</p>
 <p>C'est mathématiquement équivalent à <strong>l'entropie croiséee</strong> mais attends d'avoir seulement en entrée des données qui ont déjà été passées par la fonction Softmax.</p>
 <p>En Pytorch, c'est fait en utilisant la fonction <code>nn.LogSoftmax</code>:</p>
 <p>$$
-\log p_{i,j} = \hat{y}_{i,j} - \log \left( \sum_{k=1}^{C} e^{\hat{y}_{i,k}} \right)
+\log_2 p_{i,j} = \hat{y}_{i,j} - \log_2 \left( \sum_{k=1}^{C} e^{\hat{y}_{i,k}} \right)
 $$</p>
 <p>Ce qui donne:</p>
 <p>$$
-\mathrm{NLL}(y, \hat{y}) = -\frac{1}{N} \sum_{i=1}^{N} \left( \hat{y}_{i, y_i} - \log \sum_{k=1}^{C} e^{\hat{y}_{i,k}} \right)
+\mathrm{NLL}(y, \hat{y}) = -\frac{1}{N} \sum_{i=1}^{N} \left( \hat{y}_{i, y_i} - \log_2 \sum_{k=1}^{C} e^{\hat{y}_{i,k}} \right)
 $$</p>
 <p>En pratique, on utilise rarement <code>NLLLoss</code> directement <strong><code>CrossEntropyLoss</code> combine déjà <code>LogSoftmax</code> et<code>NLLLoss</code></strong> pour une meilleur stabilité numérique.</p>
 <h3 id="6---Huber-Loss-(nn.SmoothL1Loss)">6 - Huber Loss (<code>nn.SmoothL1Loss</code>)<a class="anchor-link" href="#6---Huber-Loss-(nn.SmoothL1Loss)">¶</a></h3><p>Utilisée pour les tâches de <strong>régression</strong> avec à la fois des petites et larges erreurs.
@@ -8194,7 +8180,7 @@ Cette valeur se trouve expérimentallement afin d'obtenir les meilleurs performa
 <h3 id="7---KL-Divergence-Loss-(nn.KLDivLoss)">7 - KL Divergence Loss (<code>nn.KLDivLoss</code>)<a class="anchor-link" href="#7---KL-Divergence-Loss-(nn.KLDivLoss)">¶</a></h3><p>Utilisée pour comparer des <strong>distributions de probabilités</strong>, par exemple dans les <strong>Auto-encodeurs variationnels</strong> et les <strong>distillations de connaissances</strong>.</p>
 <p>Cela mesure comment une distribution de probabilités $P$ divèrge d'une autre nommée $Q$:</p>
 <p>$$
-D_{KL}(P || Q) = \sum_{i} P(i) \log \frac{P(i)}{Q(i)}
+D_{KL}(P || Q) = \sum_{i} P(i) \log_2 \frac{P(i)}{Q(i)}
 $$</p>
 <p>De façon plus simple, cela nous indique à quel point des informations sont perdues lorsque l'on utilise $Q$ pour approximer $P$.</p>
 </div>
@@ -8843,6 +8829,46 @@ Fini!
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="s2">"modele_du_quickstart.pth"</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=74b0e281-74e6-45c4-bf5b-e6abf2494d5e">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Analyse-des-r%C3%A9sultats">Analyse des résultats<a class="anchor-link" href="#Analyse-des-r%C3%A9sultats">¶</a></h2><h3 id="Concept-de-baseline">Concept de baseline<a class="anchor-link" href="#Concept-de-baseline">¶</a></h3><p>Maintenant que nous avons pu obtenir les valeurs de la perte, il faut pouvoir l'interpréter.
+Une façon courante et de comparer la perte de notre modèle par rapport à celle que nous aurions eu dans le cas d'un tirage aléatoire, lorsque chaque choix possible du vocabulaire aurait la même probabilité. Pour un vocabulaire de taille $V$, chaque réponse aurait la probabilité $\frac{1}{V}$.</p>
+<p>Nous avons vu dans le cas de l'entropie croisée que le calcul de la loss était le suivant:
+$$
+\mathrm{CrossEntropy}(y, \hat{y}) = -\frac{1}{N} \sum_{i=1}^{N} \log_2\left(p_{i, y_i}\right)
+$$</p>
+<p>Or dans notre cas où chaque possibilité a la même probabilité, on aurait:
+$$
+\mathrm{CrossEntropy}(y, \hat{y}) = -\frac{1}{N} \sum_{i=1}^{N} \log_2\left(\frac{1}{V}\right) = -\frac{1}{N} * N * \log_2(\frac{1}{V}) = - \log_2(\frac{1}{V}) = \log_2(V)
+$$</p>
+<p>Ainsi, obtenir une perte proche de $\log_2(V)$ indique que l'on est proche du comportement d'un tirage aléatoire, en avoir une plus élevée nous indique qu'il y a un problème, que notre modèle apprends des choses fausses tandis qu'une valeur plus faible indique bien que l'entraînement fonctionne.</p>
+<p>Dans notre cas, nous avons 10 labels différents dans notre vocabulaire, la <em>baseline</em> vaut donc $\log_2(10) \approx 2.3$.
+On peut donc constater que l'entraînement fonctionne car nous avons une perte inférieure à $1$ et donc à fortiori à $2.3$.</p>
+<h3 id="La-perplexit%C3%A9">La perplexité<a class="anchor-link" href="#La-perplexit%C3%A9">¶</a></h3><p>Cette mesure quant-à elle mesure entre combien de choix notre modèle hésite, combien il trouve plausibles.
+Plus cette valeur est basse, plus il est sûr de ce qu'il fait.</p>
+<p>Dans le cas où la perte a été calculée par entropie croisée, on a $perplexity = e^{loss}$.</p>
+<p>Ainsi, pour notre <em>baseline</em> où le modèle hésitait entre tout les choix car ils avaient chacun la même probabilité, on retrouve bien une perplexité de $e^{\log_2(V)}=V$.</p>
+<p>La dernière valeur de perte obtenue lors du test était de $0.54$. Ainsi pour cette prédiction, la perplexité était de $e^{0.54} = 1.72$. C'est comme s'il hésitait entre moins de 2 choix différents, c'est une très bonne précision.</p>
+<p>Pour plus d'informations sur la perplexité, vous pourrez retrouver les calculs théoriques sur la <a href="https://en.wikipedia.org/wiki/Perplexity">page wikipédia</a> associée. Il y a également <a href="https://huggingface.co/docs/transformers/perplexity">sur la page hugging-face dédiée</a> un code permettant de la mettre en place sur des modèles de languages.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=37e5e219-d827-4c06-b455-6a4d1fd2dfcb">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Dans le Notebook suivant, nous allons aborder d'autre façon d'évaluer notre modèle, trouver les bons hyper-paramètres et expliquer plus en détail comment fonctionne un réseau de neurones.</strong></p>
 </div>
 </div>
 </div>
